@@ -1,10 +1,7 @@
 import { Chord } from '@tonaljs/tonal';
-import { groupInMeasures } from './utils';
+import { addIndexes } from './utils';
 
 export const BASE_OCTAVE = 4;
-
-// // this is a comment
-// Dm7 l: 8n, v: drop 2
 
 const allowedKeys = [
   {
@@ -37,7 +34,7 @@ export function parse(sequence = '') {
       line: x.line,
       ...parseLine(x.content),
     }));
-  return groupInMeasures(part);
+  return addIndexes(part);
 }
 
 function parseLine(line) {
@@ -53,7 +50,7 @@ function parseLine(line) {
 function parseRest(rest = '') {
   const tokens = rest.split(',');
   const output = {
-    duration: 1,
+    duration: '1',
   };
   tokens.forEach((token) => {
     const match = token.match(/([\w]):(?:\s+)?(.*)/);

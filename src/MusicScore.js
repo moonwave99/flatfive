@@ -1,22 +1,22 @@
-import useAbc from "./useAbc";
+import useAbc from './useAbc';
 
 export default function MusicScore({
   part,
   onChordClick,
-  measureIndex,
-  chordIndex,
-  relativeIndex
+  measure,
+  relativeIndex,
+  absoluteIndex,
 }) {
   const ref = useAbc({
     part,
+    onChordClick,
+    measure,
     relativeIndex,
-    measureIndex,
-    chordIndex,
-    onChordClick
+    absoluteIndex,
   });
   return (
-    <div className="music-score-wrapper">
-      <div className="music-score" ref={ref}></div>
+    <div className='music-score-wrapper'>
+      <div className='music-score' ref={ref}></div>
     </div>
   );
 }

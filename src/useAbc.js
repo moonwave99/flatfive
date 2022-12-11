@@ -1,41 +1,41 @@
-import { useEffect, useRef } from "react";
-import { renderAbc } from "abcjs";
-import { AbcNotation } from "@tonaljs/tonal";
-import { chunk } from "lodash";
-import { fractionToAbc } from "./lib/utils";
+import { useEffect, useRef } from 'react';
+import { renderAbc } from 'abcjs';
+import { AbcNotation } from '@tonaljs/tonal';
+import { chunk, groupBy, toArray } from 'lodash';
+import { fractionToAbc } from './lib/utils';
 
 function renderChordLabel(chord) {
   if (!chord.label) {
-    return "";
+    return '';
   }
   return `"${chord.label}" `;
 }
 
 function chordToAbc(chord) {
-  if (chord.name === "-") {
+  if (chord.name === '-') {
     return `z/${fractionToAbc(chord.duration)}`;
   }
   return `${renderChordLabel(chord)}[${chord.notes
     .map(AbcNotation.scientificToAbcNotation)
-    .join("")}]/${fractionToAbc(chord.duration)}`;
+    .join('')}]/${fractionToAbc(chord.duration)}`;
 }
 
-function partToAbc(measures) {
-  const rows = chunk(measures, 4);
+function partToAbc(part) {
+  const rows = chunk(toArray(groupBy(part, 'measure')), 4);
   return `
 K:C
 L:1
 M:4/4
 ${rows
   .map((measures) =>
-    measures.map((x) => x.map(chordToAbc).join(" ")).join(" | ")
+    measures.map((x) => x.map(chordToAbc).join(' ')).join(' | ')
   )
-  .join("|\n")}||`;
+  .join('|\n')}||`;
 }
 
 function parseClasses(classes) {
   const output = {};
-  classes.split(" ").forEach((x) => {
+  classes.split(' ').forEach((x) => {
     const measureMatch = x.match(/abcjs-mm([\d+])/);
     if (measureMatch) {
       output.measure = +measureMatch.at(-1);
@@ -50,10 +50,10 @@ function parseClasses(classes) {
 
 export default function useAbc({
   part,
-  measureIndex,
-  chordIndex,
+  measure,
+  absoluteIndex,
   relativeIndex,
-  onChordClick
+  onChordClick,
 }) {
   const ref = useRef(null);
 
@@ -62,11 +62,11 @@ export default function useAbc({
       return;
     }
     renderAbc(ref.current, partToAbc(part), {
-      responsive: "resize",
+      responsive: 'resize',
       add_classes: true,
       oneSvgPerLine: true,
       clickListener: (_abcelem, _tuneNumber, classes) =>
-        onChordClick(parseClasses(classes))
+        onChordClick(parseClasses(classes)),
     });
   }, [part, onChordClick]);
 
@@ -75,14 +75,12 @@ export default function useAbc({
       return;
     }
     ref.current
-      .querySelectorAll(".abcjs-note")
-      .forEach((el) => el.classList.remove("current"));
+      .querySelectorAll('.abcjs-note')
+      .forEach((el) => el.classList.remove('current'));
     ref.current
-      .querySelectorAll(`.abcjs-mm${measureIndex}.abcjs-n${relativeIndex}`)
-      .forEach((el) => {
-        el.classList.add("current");
-      });
-  }, [measureIndex, chordIndex, relativeIndex]);
+      .querySelectorAll(`.abcjs-mm${measure}.abcjs-n${relativeIndex}`)
+      .forEach((el) => el.classList.add('current'));
+  }, [measure, absoluteIndex, relativeIndex]);
 
   return ref;
 }
