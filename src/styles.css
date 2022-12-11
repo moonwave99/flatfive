@@ -1,0 +1,154 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --main-color: white;
+  --header-bg-color: #0f0f0f;
+  --header-color: #888888;
+  --footer-bg-color: #0f0f0f;
+  --footer-color: #888888;
+  --paino-height: 6rem;
+  --paino-white-key-width: 1.5rem;
+  --paino-black-key-width: 1rem;
+  --paino-black-key-height: 60%;
+  --icon-size: 2rem;
+}
+
+html {
+  font-family: "Arial", sans-serif;
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.main-header {
+  font-family: "Futura", sans-serif;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  line-height: 3rem;
+  background-color: var(--header-bg-color);
+  color: var(--header-color);
+}
+
+.main-header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.columns {
+  display: flex;
+  flex: 1;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.music-score-wrapper {
+  flex: 1;
+  border-left: 0.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.app > footer {
+  line-height: 2rem;
+  text-align: center;
+  background-color: var(--footer-bg-color);
+  color: var(--footer-color);
+  font-size: 0.8rem;
+}
+
+.app > footer a {
+  color: var(--footer-color);
+}
+
+.paino {
+  margin: 0;
+}
+
+.abcjs-container > div {
+  margin-bottom: 3rem;
+}
+
+.abcjs-note.current {
+  fill: dodgerblue;
+}
+
+.piano-wrapper {
+  background-color: #242424;
+  overflow: auto;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.3);
+  display: none;
+}
+
+.piano-wrapper.is-visible {
+  display: block;
+}
+
+.paino {
+  margin: 0 auto;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #242424;
+  padding: 0 0.5rem;
+  height: 3rem;
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  height: var(--icon-size);
+  color: var(--header-color);
+}
+
+.controls label input {
+  height: 100%;
+  width: 3rem;
+}
+
+.icon-button {
+  display: flex;
+  padding: 0;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+}
+
+.icon-button img {
+  width: calc(var(--icon-size) * 0.5);
+  height: calc(var(--icon-size) * 0.5);
+}
+
+.icon-button.toggable {
+  opacity: 0.5;
+}
+
+.icon-button.toggable.toggled {
+  opacity: 1;
+}
