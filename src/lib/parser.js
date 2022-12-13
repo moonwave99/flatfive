@@ -1,6 +1,7 @@
 import { Chord } from '@tonaljs/tonal';
 import { addIndexesToChords } from './utils';
 
+export const DEFAULT_BPM = 90;
 export const BASE_OCTAVE = 4;
 const COMMENT_START = '#';
 
@@ -16,6 +17,14 @@ const allowedMetaKeys = [
   {
     extended: 'bars_per_row',
     description: 'Bars per row',
+  },
+  {
+    extended: 'sketch_key',
+    description: 'Sketch key',
+  },
+  {
+    extended: 'meter',
+    description: 'Sketch meter',
   },
 ];
 
@@ -36,6 +45,19 @@ const allowedChordKeys = [
     description: 'Label applied to the chord',
   },
 ];
+
+function ensure(parsed) {
+  return {
+    ...parsed,
+    meta: {
+      bars_per_row: 4,
+      sketch_key: 'C',
+      meter: '4/4',
+      bpm: DEFAULT_BPM,
+      ...parsed.meta,
+    },
+  };
+}
 
 function getChordPropertyByKey(key) {
   return allowedChordKeys.find((x) => x.short === key || x.extended === key);
@@ -81,10 +103,10 @@ export function parse(sequence = '') {
         chords: [],
       }
     );
-  return {
+  return ensure({
     ...sketch,
     chords: addIndexesToChords(sketch.chords),
-  };
+  });
 }
 
 function parseLine(line) {

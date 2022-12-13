@@ -20,12 +20,12 @@ function chordToAbc(chord) {
     .join('')}]/${fractionToAbc(chord.duration)}`;
 }
 
-function chordsToAbc(chords, bars_per_row = 4) {
+function chordsToAbc({ chords, bars_per_row, meter, sketch_key }) {
   const rows = chunk(toArray(groupBy(chords, 'measure')), bars_per_row);
   return `
-K:C
+K:${sketch_key}
 L:1
-M:4/4
+M:${meter}
 ${rows
   .map((measures) =>
     measures.map((x) => x.map(chordToAbc).join(' ')).join(' | ')
@@ -55,6 +55,8 @@ export default function useAbc({
   relativeIndex,
   onChordClick,
   bars_per_row,
+  meter,
+  sketch_key,
 }) {
   const ref = useRef(null);
 
@@ -62,14 +64,18 @@ export default function useAbc({
     if (!ref.current) {
       return;
     }
-    renderAbc(ref.current, chordsToAbc(chords, bars_per_row), {
-      responsive: 'resize',
-      add_classes: true,
-      oneSvgPerLine: true,
-      clickListener: (_abcelem, _tuneNumber, classes) =>
-        onChordClick(parseClasses(classes)),
-    });
-  }, [chords, bars_per_row, onChordClick]);
+    renderAbc(
+      ref.current,
+      chordsToAbc({ chords, bars_per_row, meter, sketch_key }),
+      {
+        responsive: 'resize',
+        add_classes: true,
+        oneSvgPerLine: true,
+        clickListener: (_abcelem, _tuneNumber, classes) =>
+          onChordClick(parseClasses(classes)),
+      }
+    );
+  }, [chords, bars_per_row, meter, sketch_key, onChordClick]);
 
   useEffect(() => {
     if (!ref.current) {

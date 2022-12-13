@@ -18,7 +18,8 @@ Set duration, voicing and articulation for the chord.
 - set voicing (shell / drops / manual);
 - split voices over 2 staves;
 - add basic comping (bossa, swing, house, etc);
-- allow some patterns (bossa, popped, etc).
+- allow some patterns (bossa, popped, etc);
+- allow custom written voicings.
 
 ## Technical roadmap
 

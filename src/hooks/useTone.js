@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { getSoundFontInfo } from '../lib/soundfonts';
 
-export const defaultBPM = 90;
-
 const sampler = new Tone.Sampler(getSoundFontInfo()).toDestination();
 let started = false;
 let playMetronome = false;
@@ -89,7 +87,7 @@ export default function useTone({ chords, bpm }) {
     if (isPlaying) {
       Tone.Transport.pause();
     } else {
-      partRef.current.start(0);
+      partRef.current?.start(0);
       Tone.Transport.toggle();
     }
     setPlaying((prev) => !prev);

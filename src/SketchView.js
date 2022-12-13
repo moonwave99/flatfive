@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useHotkeys } from 'react-hotkeys-hook';
 import Editor from '@monaco-editor/react';
 import MusicScore from './MusicScore';
 import IconButton from './IconButton';
 import Piano from './Piano';
-import useTone, { defaultBPM } from './hooks/useTone';
+import useTone from './hooks/useTone';
 import useTitle from './hooks/useTitle';
-import { parse } from './lib/parser';
+import { DEFAULT_BPM } from './lib/parser';
 import { encodeSketch, decodeSketch } from './lib/utils';
+import { useStore } from './store/store';
+import { INITAL_SKETCH_SOURCE } from './store/slices/sketchSlice';
 
 import '../node_modules/@moonwave99/paino/src/styles/paino.css';
 import './styles.css';
@@ -25,18 +28,28 @@ G7      d: 1/2, l: V7
 C6/9    d: 1/2, l: I6/9
 -       d: 1/2`;
 
-const DEFAULT_SKETCH_SOURCE = `# hello!
-# see the Help section to know how to write your sketch`;
-
 export default function SketchView() {
+  const editorRef = useRef(null);
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const editorRef = useRef(null);
-  const [source, setSource] = useState(DEFAULT_SKETCH_SOURCE);
-  const [chords, setChords] = useState([]);
-  const [meta, setMeta] = useState({});
-  const [bpm, setBpm] = useState(defaultBPM);
-  const [showPiano, setShowPiano] = useState(true);
+
+  const [source, setSource] = useState(INITAL_SKETCH_SOURCE);
+  const [bpm, setBpm] = useState(DEFAULT_BPM);
+
+  const {
+    currentSketch,
+    updateCurrentSlice,
+    newSketch,
+    showPiano,
+    togglePiano,
+  } = useStore();
+
+  const { chords, meta } = currentSketch;
+
+  useEffect(() => {
+    setBpm(meta.bpm);
+  }, [meta.bpm]);
+
   const {
     toggle,
     stop,
@@ -51,35 +64,17 @@ export default function SketchView() {
   useEffect(() => {
     const newParam = searchParams.get('new');
     if (newParam !== null) {
+      newSketch();
       return;
     }
     try {
-      setSource(decodeSketch(searchParams.get('p')));
+      const newSource = decodeSketch(searchParams.get('p'));
+      setSource(newSource);
+      onChange(newSource);
     } catch (error) {
       console.log('SketchView: Error decoding data', error);
     }
   }, []);
-
-  useEffect(() => {
-    try {
-      const parsed = parse(source);
-      setChords(parsed.chords);
-      if (!parsed.chords.length) {
-        return;
-      }
-      setMeta(parsed.meta);
-      if (parsed.meta.bpm) {
-        setBpm(+parsed.meta.bpm);
-      }
-      const p = encodeSketch(source);
-      if (!p) {
-        return;
-      }
-      setSearchParams({ p });
-    } catch (error) {
-      console.log('SketchView: Error encoding data', error);
-    }
-  }, [source]);
 
   useEffect(() => {
     if (!editorRef.current) {
@@ -94,9 +89,30 @@ export default function SketchView() {
   }, [editorRef, currentInfo.line]);
 
   useTitle(meta.title || 'New sketch');
+  useHotkeys(
+    'meta+d',
+    (event) => {
+      event.preventDefault();
+      togglePiano();
+    },
+    { scopes: ['sketch'] }
+  );
+  useHotkeys('space', toggle, { scopes: ['sketch'] });
 
   function onChange(value) {
-    setSource(value);
+    if (value === INITAL_SKETCH_SOURCE) {
+      return;
+    }
+    try {
+      updateCurrentSlice(value);
+      const p = encodeSketch(value);
+      if (!p) {
+        return;
+      }
+      setSearchParams({ p });
+    } catch (error) {
+      console.log('SketchView: Error encoding data', error);
+    }
   }
 
   function getEditorHeight() {
@@ -170,7 +186,7 @@ export default function SketchView() {
             <IconButton
               toggable
               toggled={showPiano}
-              onClick={() => setShowPiano(!showPiano)}
+              onClick={() => togglePiano()}
               icon='piano'
             >
               {t('controls.pianoToggle')}

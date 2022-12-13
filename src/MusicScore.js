@@ -7,6 +7,8 @@ export default function MusicScore({
   relativeIndex,
   absoluteIndex,
   bars_per_row,
+  meter,
+  sketch_key,
 }) {
   const ref = useAbc({
     chords,
@@ -15,6 +17,8 @@ export default function MusicScore({
     relativeIndex,
     absoluteIndex,
     bars_per_row,
+    meter,
+    sketch_key,
   });
   return (
     <div className='music-score-wrapper'>
