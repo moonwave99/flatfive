@@ -2,29 +2,37 @@ import { Chord } from '@tonaljs/tonal';
 import { addIndexesToChords } from './utils';
 
 export const DEFAULT_BPM = 90;
-export const BASE_OCTAVE = 4;
+const DEFAULT_DURATION = '1';
+const DEFAULT_OCTAVE = 4;
 const COMMENT_START = '#';
 
-const allowedMetaKeys = [
+const allowedMetaProps = [
   {
-    extended: 'title',
+    key: 'title',
     description: 'Sketch title',
+    type: 'string',
   },
   {
-    extended: 'bpm',
+    key: 'bpm',
     description: 'Sketch bpm',
+    type: 'number',
   },
   {
-    extended: 'bars_per_row',
+    key: 'bars_per_row',
     description: 'Bars per row',
+    local: 'barsPerRow',
+    type: 'string',
   },
   {
-    extended: 'sketch_key',
+    key: 'key',
     description: 'Sketch key',
+    local: 'sketchKey',
+    type: 'string',
   },
   {
-    extended: 'meter',
+    key: 'meter',
     description: 'Sketch meter',
+    type: 'string',
   },
 ];
 
@@ -33,25 +41,39 @@ const allowedChordKeys = [
     extended: 'duration',
     short: 'd',
     description: 'Duration of the chord',
+    type: 'string',
   },
   {
     extended: 'voicing',
     short: 'v',
     description: 'Voicing of the chord',
+    type: 'string',
   },
   {
     extended: 'label',
     short: 'l',
     description: 'Label applied to the chord',
+    type: 'string',
+  },
+  {
+    extended: 'octave',
+    short: 'o',
+    description: 'Octave of the root',
+    type: 'number',
   },
 ];
+
+const valueParsers = {
+  string: (x) => x,
+  number: (x) => +x,
+};
 
 function ensure(parsed) {
   return {
     ...parsed,
     meta: {
-      bars_per_row: 4,
-      sketch_key: 'C',
+      barsPerRow: 4,
+      sketchKey: 'C',
       meter: '4/4',
       bpm: DEFAULT_BPM,
       ...parsed.meta,
@@ -65,11 +87,12 @@ function getChordPropertyByKey(key) {
 
 function parseMetaProperty(line) {
   let result = null;
-  allowedMetaKeys.forEach((key) => {
-    const rx = new RegExp(`${key.extended}:(\s+)?(.*)`);
+  allowedMetaProps.forEach((prop) => {
+    const rx = new RegExp(`${prop.key}:(\s+)?(.*)`);
     const match = line.match(rx);
     if (match) {
-      result = { [key.extended]: match[2].trim() };
+      const value = valueParsers[prop.type](match[2].trim());
+      result = { [prop.local || prop.key]: value };
     }
   });
   return result;
@@ -112,7 +135,7 @@ export function parse(sequence = '') {
 function parseLine(line) {
   const [head, ...rest] = line.trim().split(/\s+/);
   const info = parseRest(rest.join(' '));
-  const chord = parseChord(head);
+  const chord = parseChord(head, info.octave);
   return {
     ...chord,
     ...info,
@@ -122,7 +145,8 @@ function parseLine(line) {
 function parseRest(rest = '') {
   const tokens = rest.split(',');
   const output = {
-    duration: '1',
+    duration: DEFAULT_DURATION,
+    octave: DEFAULT_OCTAVE,
   };
   tokens.forEach((token) => {
     const match = token.match(/([\w]):(?:\s+)?(.*)/);
@@ -135,16 +159,16 @@ function parseRest(rest = '') {
       console.warn(`Key '${key}' with value '${value}' is not identified`);
       return;
     }
-    output[prop.extended] = value;
+    output[prop.extended] = valueParsers[prop.type](value);
   });
   return output;
 }
 
-function parseChord(token) {
+function parseChord(token, octave) {
   const chord = Chord.get(token);
 
   const suffix = chord.symbol.replace(chord.tonic, '');
-  const { notes } = Chord.getChord(suffix, `${chord.tonic}${BASE_OCTAVE}`);
+  const { notes } = Chord.getChord(suffix, `${chord.tonic}${octave}`);
 
   return {
     name: chord.symbol,

@@ -16,18 +16,6 @@ import { INITAL_SKETCH_SOURCE } from './store/slices/sketchSlice';
 import '../node_modules/@moonwave99/paino/src/styles/paino.css';
 import './styles.css';
 
-const DEFAULT_VALUE = `// my first sketch
-Cmaj7   d: 1/4, l: IΔ
-C#dim7  d: 1/4, l: #i°7
-Dm7     d: 1/4, l: ii7
-D#dim7  d: 1/4, l: #ii°7
-Em7     d: 1/2, l: iii7
-A7      d: 1/2, l: V7/ii
-Dm7     d: 1/2, l: ii7
-G7      d: 1/2, l: V7
-C6/9    d: 1/2, l: I6/9
--       d: 1/2`;
-
 export default function SketchView() {
   const editorRef = useRef(null);
   const { t } = useTranslation();

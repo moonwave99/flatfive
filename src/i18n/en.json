@@ -11,6 +11,12 @@
         "Hear them on the fly",
         "Set tempo, voicing and minimal arrangement"
       ]
+    },
+    "caption": {
+      "text": [
+        "Opening your DAW to write down a simple harmonic idea takes too long, and you are immediately submerged by choices - sounds, tempo, volumes.",
+        "If you want to scribble down a chorus and a verse, just create a new sketch, write your chords and hit play!"
+      ]
     }
   },
   "controls": {

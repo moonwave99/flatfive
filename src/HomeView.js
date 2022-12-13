@@ -5,9 +5,10 @@ export default function HomeView() {
   useTitle('Welcome!');
   const { t } = useTranslation();
   const heroText = t('home.hero.text', { returnObjects: true });
+  const captionText = t('home.caption.text', { returnObjects: true });
   return (
     <section className='home'>
-      <div className='hero'>
+      <section className='hero'>
         <div className='hero-content'>
           <h1>{t('title')}</h1>
           {heroText.map((x, i) => (
@@ -15,7 +16,14 @@ export default function HomeView() {
           ))}
         </div>
         <img src='/screenshot.png' alt='A screenshot of the FlatFive editor' />
-      </div>
+      </section>
+      <section className='caption'>
+        <div className='container'>
+          {captionText.map((x, i) => (
+            <p key={i}>{x}</p>
+          ))}
+        </div>
+      </section>
     </section>
   );
 }

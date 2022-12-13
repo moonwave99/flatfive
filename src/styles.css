@@ -102,6 +102,18 @@ main {
   margin-bottom: 2rem;
 }
 
+.home .container {
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 2rem 1rem;
+}
+
+.home .caption p {
+  font-size: 2rem;
+  line-height: 3rem;
+  margin-bottom: 2rem;
+}
+
 .sketch {
   flex: 1;
 }
@@ -111,7 +123,7 @@ main {
   flex: 1;
 }
 
-.container {
+.sketch .container {
   display: flex;
   flex-direction: column;
   overflow: auto;

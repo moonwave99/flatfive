@@ -3,11 +3,11 @@ import { parse } from '../../lib/parser';
 
 export const INITAL_SKETCH_SOURCE = `# hello!
 # see the Help section to know how to write your sketch
-sketch_key: Em
+key: Em
 meter: 4/4
-title: my new sketch
+title: My New Sketch
 
-# write chords here`;
+# write chords below on separate lines`;
 
 const INITIAL_SKETCH = parse(INITAL_SKETCH_SOURCE);
 
