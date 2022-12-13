@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { renderAbc } from 'abcjs';
 import { AbcNotation } from '@tonaljs/tonal';
 import { chunk, groupBy, toArray } from 'lodash';
-import { fractionToAbc } from './lib/utils';
+import { fractionToAbc } from '../lib/utils';
 
 function renderChordLabel(chord) {
   if (!chord.label) {
@@ -20,8 +20,8 @@ function chordToAbc(chord) {
     .join('')}]/${fractionToAbc(chord.duration)}`;
 }
 
-function partToAbc(part) {
-  const rows = chunk(toArray(groupBy(part, 'measure')), 4);
+function chordsToAbc(chords, bars_per_row = 4) {
+  const rows = chunk(toArray(groupBy(chords, 'measure')), bars_per_row);
   return `
 K:C
 L:1
@@ -38,22 +38,23 @@ function parseClasses(classes) {
   classes.split(' ').forEach((x) => {
     const measureMatch = x.match(/abcjs-mm([\d+])/);
     if (measureMatch) {
-      output.measure = +measureMatch.at(-1);
+      output.measure = +measureMatch[measureMatch.length - 1];
     }
     const indexMatch = x.match(/abcjs-n([\d+])/);
     if (indexMatch) {
-      output.index = +indexMatch.at(-1);
+      output.index = +indexMatch[indexMatch.length - 1];
     }
   });
   return output;
 }
 
 export default function useAbc({
-  part,
+  chords,
   measure,
   absoluteIndex,
   relativeIndex,
   onChordClick,
+  bars_per_row,
 }) {
   const ref = useRef(null);
 
@@ -61,14 +62,14 @@ export default function useAbc({
     if (!ref.current) {
       return;
     }
-    renderAbc(ref.current, partToAbc(part), {
+    renderAbc(ref.current, chordsToAbc(chords, bars_per_row), {
       responsive: 'resize',
       add_classes: true,
       oneSvgPerLine: true,
       clickListener: (_abcelem, _tuneNumber, classes) =>
         onChordClick(parseClasses(classes)),
     });
-  }, [part, onChordClick]);
+  }, [chords, bars_per_row, onChordClick]);
 
   useEffect(() => {
     if (!ref.current) {

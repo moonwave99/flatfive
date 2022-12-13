@@ -1,7 +1,6 @@
-import { values } from 'lodash';
 import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
-import { getSoundFontInfo } from './lib/soundfonts';
+import { getSoundFontInfo } from '../lib/soundfonts';
 
 export const defaultBPM = 90;
 
@@ -9,11 +8,10 @@ const sampler = new Tone.Sampler(getSoundFontInfo()).toDestination();
 let started = false;
 let playMetronome = false;
 
-function getTonePart({ part, loop, setCurrentInfo }) {
-  console.log({ part });
-  const partLength = part.at(-1).measure + 1;
+function getPart({ chords, loop, setCurrentInfo }) {
+  const partLength = chords[chords.length - 1].measure + 1;
 
-  const tonePart = new Tone.Part((time, value) => {
+  const part = new Tone.Part((time, value) => {
     sampler.triggerAttackRelease(value.notes, value.duration, time);
     Tone.Transport.scheduleOnce(() => {
       setCurrentInfo((prev) => {
@@ -36,14 +34,14 @@ function getTonePart({ part, loop, setCurrentInfo }) {
         notes: [...notes],
       };
     });
-  }, part);
+  }, chords);
 
-  tonePart.loop = loop;
-  tonePart.loopEnd = `${partLength}m`;
-  return tonePart;
+  part.loop = loop;
+  part.loopEnd = `${partLength}m`;
+  return part;
 }
 
-export default function useTone({ part, bpm }) {
+export default function useTone({ chords, bpm }) {
   const [isPlaying, setPlaying] = useState(false);
   const [loop, setLoop] = useState(false);
   const [metronomeOn, setMetronomeOn] = useState(false);
@@ -66,7 +64,7 @@ export default function useTone({ part, bpm }) {
       return;
     }
     Tone.Transport.cancel();
-    if (!part.length) {
+    if (!chords.length) {
       return;
     }
     const metronome = new Tone.Loop((time) => {
@@ -76,12 +74,12 @@ export default function useTone({ part, bpm }) {
       sampler.triggerAttackRelease('C6', '32n', time);
     }, '4n').start(0);
 
-    partRef.current = getTonePart({
-      part,
+    partRef.current = getPart({
+      chords,
       loop,
       setCurrentInfo,
     });
-  }, [part, loop, isPlaying]);
+  }, [chords, loop, isPlaying]);
 
   async function toggle() {
     if (!started) {
@@ -99,6 +97,13 @@ export default function useTone({ part, bpm }) {
 
   function stop() {
     setPlaying(false);
+    setCurrentInfo({
+      notes: [],
+      line: -1,
+      measure: -1,
+      absoluteIndex: -1,
+      relativeIndex: -1,
+    });
     Tone.Transport.stop();
   }
 

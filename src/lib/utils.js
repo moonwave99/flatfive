@@ -13,12 +13,12 @@ function sixteenthsToTime(x) {
   return `${bars}:${beats}:0`;
 }
 
-export function addIndexes(part) {
+export function addIndexesToChords(chords) {
   let total = 0;
   let time = 0;
   let measure = 0;
   let relativeIndex = 0;
-  return part.map((item, absoluteIndex) => {
+  return chords.map((item, absoluteIndex) => {
     const duration = frac(item.duration);
     total += duration;
     if (total > 1) {
@@ -68,4 +68,12 @@ export function fractionToSixteenths(x) {
     '1/2': 8,
     1: 16,
   }[x];
+}
+
+export function encodeSketch(sketch) {
+  return window.btoa(unescape(encodeURIComponent(sketch)));
+}
+
+export function decodeSketch(encodedSketch) {
+  return decodeURIComponent(escape(window.atob(encodedSketch)));
 }

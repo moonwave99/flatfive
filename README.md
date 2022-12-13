@@ -14,6 +14,7 @@ Set duration, voicing and articulation for the chord.
 
 ## Musical roadmap
 
+- add lead sheet view;
 - set voicing (shell / drops / manual);
 - split voices over 2 staves;
 - add basic comping (bossa, swing, house, etc);
@@ -22,4 +23,5 @@ Set duration, voicing and articulation for the chord.
 ## Technical roadmap
 
 - add zustand;
-- persist sketches in localstorage
+- persist sketches in localstorage;
+- settle for a serialisation format.

@@ -1,9 +1,25 @@
 import { Chord } from '@tonaljs/tonal';
-import { addIndexes } from './utils';
+import { addIndexesToChords } from './utils';
 
 export const BASE_OCTAVE = 4;
+const COMMENT_START = '#';
 
-const allowedKeys = [
+const allowedMetaKeys = [
+  {
+    extended: 'title',
+    description: 'Sketch title',
+  },
+  {
+    extended: 'bpm',
+    description: 'Sketch bpm',
+  },
+  {
+    extended: 'bars_per_row',
+    description: 'Bars per row',
+  },
+];
+
+const allowedChordKeys = [
   {
     extended: 'duration',
     short: 'd',
@@ -21,20 +37,54 @@ const allowedKeys = [
   },
 ];
 
-function getPropertyByKey(key) {
-  return allowedKeys.find((x) => x.short === key || x.extended === key);
+function getChordPropertyByKey(key) {
+  return allowedChordKeys.find((x) => x.short === key || x.extended === key);
+}
+
+function parseMetaProperty(line) {
+  let result = null;
+  allowedMetaKeys.forEach((key) => {
+    const rx = new RegExp(`${key.extended}:(\s+)?(.*)`);
+    const match = line.match(rx);
+    if (match) {
+      result = { [key.extended]: match[2].trim() };
+    }
+  });
+  return result;
 }
 
 export function parse(sequence = '') {
   const lines = sequence.split('\n');
-  const part = lines
+  const sketch = lines
     .map((x, index) => ({ content: x, line: index + 1 }))
-    .filter((x) => !!x.content && !x.content.startsWith('//'))
-    .map((x) => ({
-      line: x.line,
-      ...parseLine(x.content),
-    }));
-  return addIndexes(part);
+    .filter((x) => !!x.content && !x.content.startsWith(COMMENT_START))
+    .reduce(
+      (memo, x) => {
+        const props = parseMetaProperty(x.content);
+        if (props) {
+          return {
+            ...memo,
+            meta: {
+              ...memo.meta,
+              ...props,
+            },
+          };
+        }
+        const parsedChord = parseLine(x.content);
+        return {
+          ...memo,
+          chords: [...memo.chords, { ...parsedChord, line: x.line }],
+        };
+      },
+      {
+        meta: {},
+        chords: [],
+      }
+    );
+  return {
+    ...sketch,
+    chords: addIndexesToChords(sketch.chords),
+  };
 }
 
 function parseLine(line) {
@@ -58,7 +108,7 @@ function parseRest(rest = '') {
       return;
     }
     const [, key, value] = match;
-    const prop = getPropertyByKey(key);
+    const prop = getChordPropertyByKey(key);
     if (!prop) {
       console.warn(`Key '${key}' with value '${value}' is not identified`);
       return;

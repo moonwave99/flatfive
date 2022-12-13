@@ -16,7 +16,8 @@
 }
 
 html {
-  font-family: "Arial", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+    helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
   font-size: 16px;
 }
 
@@ -33,10 +34,11 @@ body {
 
 main {
   flex: 1;
+  display: flex;
 }
 
 .main-header {
-  font-family: "Futura", sans-serif;
+  font-family: 'Futura', sans-serif;
   display: flex;
   align-items: center;
   padding: 0 1rem;
@@ -45,9 +47,63 @@ main {
   color: var(--header-color);
 }
 
-.main-header h1 {
-  margin: 0;
+.main-header .logo {
+  font-weight: bold;
+  margin-left: auto;
   font-size: 1.2rem;
+}
+
+.main-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.main-header nav a {
+  color: white;
+}
+
+.home h1 {
+  font-size: 4rem;
+  line-height: 5rem;
+  margin-bottom: 2rem;
+}
+
+.home {
+  flex: 1;
+}
+
+.hero {
+  flex: 1;
+  font-family: 'Futura', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+  padding: 5rem 0;
+  background-color: #cdb5da;
+}
+
+.hero img {
+  width: 50%;
+  box-shadow: 0 0 1rem rgb(0 0 0 / 40%);
+}
+
+.hero-content {
+  text-align: right;
+}
+
+.hero > * {
+  flex: 1;
+}
+
+.hero p {
+  font-size: 2rem;
+  line-height: 3rem;
+  margin-bottom: 2rem;
+}
+
+.sketch {
+  flex: 1;
 }
 
 .columns {
@@ -56,10 +112,17 @@ main {
 }
 
 .container {
-  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: auto;
+}
+
+.editor-container {
+  width: calc(100% / 9 * 4);
+}
+
+.score-container {
+  width: calc(100% / 9 * 5);
 }
 
 .music-score-wrapper {
@@ -113,6 +176,7 @@ main {
   background-color: #242424;
   padding: 0 0.5rem;
   height: 3rem;
+  overflow: auto;
 }
 
 .controls label {
@@ -138,6 +202,7 @@ main {
   justify-content: center;
   border: none;
   border-radius: 50%;
+  aspect-ratio: 1;
 }
 
 .icon-button img {

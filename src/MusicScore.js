@@ -1,18 +1,20 @@
-import useAbc from './useAbc';
+import useAbc from './hooks/useAbc';
 
 export default function MusicScore({
-  part,
+  chords,
   onChordClick,
   measure,
   relativeIndex,
   absoluteIndex,
+  bars_per_row,
 }) {
   const ref = useAbc({
-    part,
+    chords,
     onChordClick,
     measure,
     relativeIndex,
     absoluteIndex,
+    bars_per_row,
   });
   return (
     <div className='music-score-wrapper'>

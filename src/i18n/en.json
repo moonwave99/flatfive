@@ -1,0 +1,23 @@
+{
+  "title": "FlatFive",
+  "nav": {
+    "home": "Home",
+    "new": "New Sketch"
+  },
+  "home": {
+    "hero": {
+      "text": [
+        "Write down your ideas",
+        "Hear them on the fly",
+        "Set tempo, voicing and minimal arrangement"
+      ]
+    }
+  },
+  "controls": {
+    "bpm": "BPM",
+    "playToggle": "Play / Pause!",
+    "pianoToggle": "Show / Hide Piano",
+    "metronomeToggle": "Toggle Metronome",
+    "loopToggle": "Toggle Loop"
+  }
+}
