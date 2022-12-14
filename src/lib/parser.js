@@ -165,13 +165,18 @@ function parseRest(rest = '') {
 }
 
 function parseChord(token, octave) {
-  const chord = Chord.get(token);
+  const [root, base] = token.split('/');
+  const chord = Chord.get(root);
 
   const suffix = chord.symbol.replace(chord.tonic, '');
-  const { notes } = Chord.getChord(suffix, `${chord.tonic}${octave}`);
+  const { notes } = Chord.getChord(
+    suffix,
+    `${chord.tonic}${octave}`,
+    base ? `${base}${octave}` : null
+  );
 
   return {
-    name: chord.symbol,
+    name: base ? token : chord.symbol,
     root: chord.tonic,
     notes,
   };

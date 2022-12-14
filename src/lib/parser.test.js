@@ -44,6 +44,50 @@ Cmaj7`);
   ]);
 });
 
+test.only('parse - slash chords', () => {
+  const parsed = parse(`C
+G/B
+Am`);
+  expect(parsed.chords).toEqual([
+    {
+      root: 'C',
+      name: 'C',
+      duration: '1',
+      octave: 4,
+      notes: ['C4', 'E4', 'G4'],
+      line: 1,
+      measure: 0,
+      absoluteIndex: 0,
+      relativeIndex: 0,
+      time: '0:0:0',
+    },
+    {
+      root: 'G',
+      name: 'G/B',
+      duration: '1',
+      octave: 4,
+      notes: ['B4', 'D5', 'G5'],
+      line: 2,
+      measure: 1,
+      absoluteIndex: 1,
+      relativeIndex: 0,
+      time: '1:0:0',
+    },
+    {
+      root: 'A',
+      name: 'Am',
+      duration: '1',
+      octave: 4,
+      notes: ['A4', 'C5', 'E5'],
+      line: 3,
+      measure: 2,
+      absoluteIndex: 2,
+      relativeIndex: 0,
+      time: '2:0:0',
+    },
+  ]);
+});
+
 test('parse - chords with durations', () => {
   const parsed = parse(`Dm7 d: 1/2
 G7  d: 1/2
