@@ -101,36 +101,38 @@ function parseMetaProperty(line) {
 
 export function parse(sequence = '') {
   const lines = sequence.split('\n');
-  const sketch = lines
-    .map((x, index) => ({ content: x, line: index + 1 }))
-    .filter((x) => !!x.content && !x.content.startsWith(COMMENT_START))
-    .reduce(
-      (memo, x) => {
-        const props = parseMetaProperty(x.content);
-        if (props) {
+  const sketch = ensure(
+    lines
+      .map((x, index) => ({ content: x, line: index + 1 }))
+      .filter((x) => !!x.content && !x.content.startsWith(COMMENT_START))
+      .reduce(
+        (memo, x) => {
+          const props = parseMetaProperty(x.content);
+          if (props) {
+            return {
+              ...memo,
+              meta: {
+                ...memo.meta,
+                ...props,
+              },
+            };
+          }
+          const parsedChord = parseLine(x.content);
           return {
             ...memo,
-            meta: {
-              ...memo.meta,
-              ...props,
-            },
+            chords: [...memo.chords, { ...parsedChord, line: x.line }],
           };
+        },
+        {
+          meta: {},
+          chords: [],
         }
-        const parsedChord = parseLine(x.content);
-        return {
-          ...memo,
-          chords: [...memo.chords, { ...parsedChord, line: x.line }],
-        };
-      },
-      {
-        meta: {},
-        chords: [],
-      }
-    );
-  return ensure({
+      )
+  );
+  return {
     ...sketch,
-    chords: addIndexesToChords(sketch.chords),
-  });
+    chords: addIndexesToChords(sketch.chords, sketch.meta.meter),
+  };
 }
 
 function parseLine(line) {

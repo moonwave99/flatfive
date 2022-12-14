@@ -8,7 +8,7 @@ Cmaj7`);
     {
       root: 'D',
       name: 'Dm7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['D4', 'F4', 'A4', 'C5'],
       line: 1,
@@ -20,7 +20,7 @@ Cmaj7`);
     {
       root: 'G',
       name: 'G7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['G4', 'B4', 'D5', 'F5'],
       line: 2,
@@ -32,7 +32,7 @@ Cmaj7`);
     {
       root: 'C',
       name: 'Cmaj7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['C4', 'E4', 'G4', 'B4'],
       line: 3,
@@ -52,7 +52,7 @@ Am`);
     {
       root: 'C',
       name: 'C9/Bb',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['Bb4', 'D5', 'C5', 'E5', 'G5'],
       line: 1,
@@ -64,7 +64,7 @@ Am`);
     {
       root: 'G',
       name: 'G/B',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['B4', 'D5', 'G5'],
       line: 2,
@@ -76,7 +76,7 @@ Am`);
     {
       root: 'A',
       name: 'Am',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['A4', 'C5', 'E5'],
       line: 3,
@@ -120,7 +120,7 @@ Cmaj7`);
     {
       root: 'C',
       name: 'Cmaj7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['C4', 'E4', 'G4', 'B4'],
       line: 3,
@@ -164,7 +164,7 @@ Cmaj7`);
     {
       root: 'C',
       name: 'Cmaj7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['C4', 'E4', 'G4', 'B4'],
       line: 3,
@@ -184,7 +184,7 @@ Cmaj7 l: Imaj7, v: shell-a`);
     {
       root: 'D',
       name: 'Dm7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['D4', 'F4', 'A4', 'C5'],
       line: 1,
@@ -198,7 +198,7 @@ Cmaj7 l: Imaj7, v: shell-a`);
     {
       root: 'G',
       name: 'G7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['G4', 'B4', 'D5', 'F5'],
       line: 2,
@@ -212,7 +212,7 @@ Cmaj7 l: Imaj7, v: shell-a`);
     {
       root: 'C',
       name: 'Cmaj7',
-      duration: '1',
+      duration: '4/4',
       octave: 4,
       notes: ['C4', 'E4', 'G4', 'B4'],
       line: 3,
@@ -241,7 +241,7 @@ Cmaj7`);
       {
         root: 'D',
         name: 'Dm7',
-        duration: '1',
+        duration: '4/4',
         octave: 4,
         notes: ['D4', 'F4', 'A4', 'C5'],
         line: 1,
@@ -253,7 +253,7 @@ Cmaj7`);
       {
         root: 'G',
         name: 'G7',
-        duration: '1',
+        duration: '4/4',
         octave: 4,
         notes: ['G4', 'B4', 'D5', 'F5'],
         line: 2,
@@ -265,7 +265,7 @@ Cmaj7`);
       {
         root: 'C',
         name: 'Cmaj7',
-        duration: '1',
+        duration: '4/4',
         octave: 4,
         notes: ['C4', 'E4', 'G4', 'B4'],
         line: 3,
@@ -282,6 +282,7 @@ test('parse - meta with custom props', () => {
   const parsed = parse(`title: my sketch
 key: G
 bpm: 120
+meter: 3/4
 Am7
 D7
 Gmaj7`);
@@ -291,16 +292,16 @@ Gmaj7`);
       sketchKey: 'G',
       bpm: 120,
       barsPerRow: 4,
-      meter: '4/4',
+      meter: '3/4',
     },
     chords: [
       {
         root: 'A',
         name: 'Am7',
-        duration: '1',
+        duration: '3/4',
         octave: 4,
         notes: ['A4', 'C5', 'E5', 'G5'],
-        line: 4,
+        line: 5,
         measure: 0,
         absoluteIndex: 0,
         relativeIndex: 0,
@@ -309,10 +310,10 @@ Gmaj7`);
       {
         root: 'D',
         name: 'D7',
-        duration: '1',
+        duration: '3/4',
         octave: 4,
         notes: ['D4', 'F#4', 'A4', 'C5'],
-        line: 5,
+        line: 6,
         measure: 1,
         absoluteIndex: 1,
         relativeIndex: 0,
@@ -321,10 +322,10 @@ Gmaj7`);
       {
         root: 'G',
         name: 'Gmaj7',
-        duration: '1',
+        duration: '3/4',
         octave: 4,
         notes: ['G4', 'B4', 'D5', 'F#5'],
-        line: 6,
+        line: 7,
         measure: 2,
         absoluteIndex: 2,
         relativeIndex: 0,

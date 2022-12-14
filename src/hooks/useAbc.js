@@ -11,24 +11,27 @@ function renderChordLabel(chord) {
   return `"${chord.label}" `;
 }
 
-function chordToAbc(chord) {
+function chordToAbc(chord, meter) {
+  const abcDuration = fractionToAbc(chord.duration, meter);
   if (chord.name === '-') {
-    return `z/${fractionToAbc(chord.duration)}`;
+    return `z${abcDuration}`;
   }
   return `${renderChordLabel(chord)}[${chord.notes
     .map(AbcNotation.scientificToAbcNotation)
-    .join('')}]/${fractionToAbc(chord.duration)}`;
+    .join('')}]${abcDuration}`;
 }
 
-function chordsToAbc({ chords, barsPerRow, meter, sketchKey }) {
+function chordsToAbc({ chords, barsPerRow, meter, sketchKey, unit = '1/16' }) {
   const rows = chunk(toArray(groupBy(chords, 'measure')), barsPerRow);
   return `
 K:${sketchKey}
-L:1
+L:${unit}
 M:${meter}
 ${rows
   .map((measures) =>
-    measures.map((x) => x.map(chordToAbc).join(' ')).join(' | ')
+    measures
+      .map((x) => x.map((x) => chordToAbc(x, meter)).join(' '))
+      .join(' | ')
   )
   .join('|\n')}||`;
 }

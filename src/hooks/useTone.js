@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
+import { getTimeSignatureFromMeter } from '../lib/utils';
 import { getSoundFontInfo } from '../lib/soundfonts';
 
 const sampler = new Tone.Sampler(getSoundFontInfo()).toDestination();
@@ -39,7 +40,7 @@ function getPart({ chords, loop, setCurrentInfo }) {
   return part;
 }
 
-export default function useTone({ chords, bpm }) {
+export default function useTone({ chords, bpm, meter = '4/4' }) {
   const [isPlaying, setPlaying] = useState(false);
   const [loop, setLoop] = useState(false);
   const [metronomeOn, setMetronomeOn] = useState(false);
@@ -52,6 +53,8 @@ export default function useTone({ chords, bpm }) {
   });
 
   const partRef = useRef(null);
+
+  Tone.Transport.timeSignature = getTimeSignatureFromMeter(meter);
 
   useEffect(() => {
     Tone.Transport.bpm.value = bpm;

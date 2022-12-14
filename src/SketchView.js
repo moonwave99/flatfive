@@ -47,7 +47,7 @@ export default function SketchView() {
     metronomeOn,
     togglePartLoop,
     currentInfo,
-  } = useTone({ chords, bpm });
+  } = useTone({ chords, bpm, meter: meta.meter });
 
   useEffect(() => {
     const newParam = searchParams.get('new');
