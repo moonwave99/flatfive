@@ -1,5 +1,6 @@
 import { Chord } from '@tonaljs/tonal';
 import { addIndexesToChords } from './utils';
+import { isNumber } from 'lodash';
 
 export const DEFAULT_BPM = 90;
 const DEFAULT_DURATION = '1';
@@ -164,20 +165,46 @@ function parseRest(rest = '') {
   return output;
 }
 
-function parseChord(token, octave) {
-  const [root, base] = token.split('/');
-  const chord = Chord.get(root);
+function getNote(x) {
+  const match = x.match(/^([A-G])([b|#]+)?(.*)/);
 
-  const suffix = chord.symbol.replace(chord.tonic, '');
+  if (!match) {
+    return {};
+  }
+  const [, note, accidental, rest] = match;
+  let suffix = rest;
+
+  let slash;
+  if (rest) {
+    const restMatch = `${rest}`.match(/\/([A-G])([b|#]+)?$/);
+    if (restMatch) {
+      const [slashMatch, slashNote, slashAccidental] = restMatch;
+      slash = slashAccidental ? `${slashNote}${slashAccidental}` : slashNote;
+      suffix = rest.replace(slashMatch, '');
+    }
+  }
+
+  const root = accidental ? `${note}${accidental}` : note;
+
+  return {
+    root,
+    slash,
+    suffix,
+    name: x,
+  };
+}
+
+function parseChord(token, octave) {
+  const { root, slash, suffix, name } = getNote(token);
   const { notes } = Chord.getChord(
     suffix,
-    `${chord.tonic}${octave}`,
-    base ? `${base}${octave}` : null
+    `${root}${octave}`,
+    slash ? `${slash}${octave}` : null
   );
 
   return {
-    name: base ? token : chord.symbol,
-    root: chord.tonic,
+    name,
+    root,
     notes,
   };
 }

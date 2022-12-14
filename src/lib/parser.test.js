@@ -44,17 +44,17 @@ Cmaj7`);
   ]);
 });
 
-test.only('parse - slash chords', () => {
-  const parsed = parse(`C
+test('parse - slash chords', () => {
+  const parsed = parse(`C9/Bb
 G/B
 Am`);
   expect(parsed.chords).toEqual([
     {
       root: 'C',
-      name: 'C',
+      name: 'C9/Bb',
       duration: '1',
       octave: 4,
-      notes: ['C4', 'E4', 'G4'],
+      notes: ['Bb4', 'D5', 'C5', 'E5', 'G5'],
       line: 1,
       measure: 0,
       absoluteIndex: 0,

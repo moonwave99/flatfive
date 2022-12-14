@@ -11,7 +11,7 @@ D7b9    l: V7b9
 Gm7     l: i7, o: 3
 G7#5    l: V7#5/iv, o: 3`;
 
-const firstSketch = `// my first sketch
+const firstSketch = `# my first sketch
 Cmaj7   d: 1/4, l: IΔ
 C#dim7  d: 1/4, l: #i°7
 Dm7     d: 1/4, l: ii7
