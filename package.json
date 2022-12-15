@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@monaco-editor/react": "4.4.6",
-    "@moonwave99/paino": "0.1.14",
+    "@moonwave99/paino": "0.1.15",
     "@tonaljs/tonal": "4.8.0",
     "abcjs": "6.1.7",
     "clsx": "1.2.1",
