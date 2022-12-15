@@ -86,7 +86,7 @@ export function frac(x) {
 
 export function getTimeSignatureFromMeter(meter = '4/4') {
   try {
-    return meter.split('/');
+    return meter.split('/').map((x) => +x);
   } catch (error) {
     throw new Error(`${x} is not a computable fraction`);
   }

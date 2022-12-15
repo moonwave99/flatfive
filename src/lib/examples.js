@@ -22,3 +22,28 @@ Dm7     d: 1/2, l: ii7
 G7      d: 1/2, l: V7
 C6/9    d: 1/2, l: I6/9
 -       d: 1/2`;
+
+const threeQuarters = `# meta
+key: Em
+title: My New Sketch
+bpm: 120
+meter: 3/4
+
+# chords
+Em
+C/G
+G
+D/F#
+Em  d: 1/4
+Em  d: 1/4
+Em  d: 1/4
+C/G  d: 1/4
+C/G  d: 1/4
+C/G  d: 1/4
+G  d: 1/4
+G  d: 1/4
+G  d: 1/4
+D/F#  d: 1/4
+D/F#  d: 1/4
+D/F#  d: 1/4
+Emadd9`;

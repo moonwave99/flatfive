@@ -6,7 +6,7 @@ Hear and remember the harmony ideas you write down.
 Esus2
 Am6
 C#11
-B7aug5
+B7#5
 Em9
 ```
 

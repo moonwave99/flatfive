@@ -1,36 +1,46 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
+import { Note } from '@tonaljs/tonal';
 import { getTimeSignatureFromMeter } from '../lib/utils';
 import { getSoundFontInfo } from '../lib/soundfonts';
+import { METRONOME_VOLUME } from '../lib/config';
 
 const sampler = new Tone.Sampler(getSoundFontInfo()).toDestination();
+const metronomeSampler = new Tone.Sampler({
+  urls: {
+    C3: '/samples/click.wav',
+  },
+}).toDestination();
+metronomeSampler.volume.value = METRONOME_VOLUME;
 let started = false;
 let playMetronome = false;
+let clickCount = 0;
 
 function getPart({ chords, loop, setCurrentInfo }) {
   const partLength = chords[chords.length - 1].measure + 1;
 
   const part = new Tone.Part((time, value) => {
-    sampler.triggerAttackRelease(value.notes, value.duration, time);
+    const notes = value.notes.map(Note.simplify);
+    sampler.triggerAttackRelease(notes, value.duration, time);
     Tone.Transport.scheduleOnce(() => {
       setCurrentInfo((prev) => {
-        const notes = new Set(prev.notes);
-        value.notes.forEach((x) => notes.delete(x));
+        const noteSet = new Set(prev.notes);
+        notes.forEach((x) => noteSet.delete(x));
         return {
           ...prev,
-          notes: [...notes],
+          notes: [...noteSet],
         };
       });
     }, ` +${value.duration}`);
     setCurrentInfo((prev) => {
-      const notes = new Set(prev.notes);
-      value.notes.forEach((x) => notes.add(x));
+      const noteSet = new Set(prev.notes);
+      notes.forEach((x) => noteSet.add(x));
       return {
         line: value.line,
         measure: value.measure,
         absoluteIndex: value.absoluteIndex,
         relativeIndex: value.relativeIndex,
-        notes: [...notes],
+        notes: [...noteSet],
       };
     });
   }, chords);
@@ -53,8 +63,9 @@ export default function useTone({ chords, bpm, meter = '4/4' }) {
   });
 
   const partRef = useRef(null);
+  const timeSignature = getTimeSignatureFromMeter(meter);
 
-  Tone.Transport.timeSignature = getTimeSignatureFromMeter(meter);
+  Tone.Transport.timeSignature = timeSignature;
 
   useEffect(() => {
     Tone.Transport.bpm.value = bpm;
@@ -68,11 +79,17 @@ export default function useTone({ chords, bpm, meter = '4/4' }) {
     if (!chords.length) {
       return;
     }
+
     const metronome = new Tone.Loop((time) => {
-      if (!playMetronome) {
-        return;
+      metronomeSampler.triggerAttackRelease(
+        `C${clickCount === 0 ? 4 : 3}`,
+        '16n',
+        time
+      );
+      clickCount++;
+      if (clickCount === timeSignature[0]) {
+        clickCount = 0;
       }
-      sampler.triggerAttackRelease('C6', '32n', time);
     }, '4n').start(0);
 
     partRef.current = getPart({
@@ -80,7 +97,7 @@ export default function useTone({ chords, bpm, meter = '4/4' }) {
       loop,
       setCurrentInfo,
     });
-  }, [chords, loop, isPlaying]);
+  }, [chords, loop, isPlaying, timeSignature]);
 
   async function toggle() {
     if (!started) {
@@ -105,11 +122,15 @@ export default function useTone({ chords, bpm, meter = '4/4' }) {
       absoluteIndex: -1,
       relativeIndex: -1,
     });
+    clickCount = 0;
     Tone.Transport.stop();
   }
 
   function toggleMetronome() {
     playMetronome = !playMetronome;
+    metronomeSampler.volume.value = playMetronome
+      ? METRONOME_VOLUME
+      : -Infinity;
     setMetronomeOn(playMetronome);
   }
 
